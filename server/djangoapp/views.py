@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cf, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -93,14 +93,60 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "https://d4b89807.us-south.apigw.appdomain.cloud/api/dealership/"
+        dealerships = get_dealers_from_cf(url)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        return HttpResponse(dealer_names)
+        #return render(request, 'djangoapp/index.html', context)
+
+
+def get_dealerships_state(request, urlst):
+    context = {}
+    if request.method == "GET":
+        url = "https://d4b89807.us-south.apigw.appdomain.cloud/api/dealership/"
+        dealerships = get_dealers_by_state(url, urlst.upper())
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        return HttpResponse(dealer_names)
+        #return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
+def get_dealer_details(request, dealer_id):
+    context = {}
+    if request.method == "GET":
+        url = "https://d4b89807.us-south.apigw.appdomain.cloud/api/review/"
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        dealer_reviews = ' '.join([review.review + " [" + review.sentiment + "] " + "(" + review.name + ")" for review in reviews])
+        return HttpResponse(dealer_reviews)
+
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
+def add_review(request, dealer_id):
+
+    if request.user.is_authenticated:
+
+        review = {
+            'time': datetime.utcnow().isoformat(),
+            'dealership': dealer_id,
+            'id': 200,
+            'review': 'This is a great car dealer',
+            'name': "Ton Guglielmi",
+            'purchase': False
+        }
+
+        json_payload = {
+            'review':   review,            
+        }
+
+        response = post_request('https://d4b89807.us-south.apigw.appdomain.cloud/api/review/', 
+                                json_payload, dealerId=dealer_id)
+        
+        print("Response: ", response)
+
+        return HttpResponse(json.dumps(response))
+
 
