@@ -150,20 +150,32 @@ def add_review(request, dealer_id):
 
         elif request.method == 'POST':
 
+
+            # deal with the purchasecheck field
+            purchase = request.POST.get('purchasecheck')
+            if purchase is None:
+                purchase = False
+            else:
+                if purchase == 'on':
+                    purchase = True
+                else:
+                    purchase = False
+
             review = {
-                'time': datetime.utcnow().isoformat(),
-                'dealership': dealer_id,
-                'review': request.POST['content'],
-                'name': ' '.join([request.user.first_name, request.user.last_name]),
-                'purchase': request.POST.get('purchasecheck')
+                'time':         datetime.utcnow().isoformat(),
+                'dealership':   dealer_id,
+                'review':       request.POST['content'],
+                'name':         ' '.join([request.user.first_name, request.user.last_name]),
+                'purchase':     purchase
             }
 
             if review['purchase']:
                 car = CarModel.objects.get(id=int(request.POST['car']))
                 review.update({
-                    'car_make':     car.car_make.name,
-                    'car_model':    car.name,
-                    'car_year':     car.year
+                    'car_make':         car.car_make.name,
+                    'car_model':        car.name,
+                    'car_year':         car.year.year,
+                    'purchase_date':    request.POST['purchasedate']
                 })
 
             json_payload = {

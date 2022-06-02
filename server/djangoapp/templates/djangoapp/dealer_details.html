@@ -14,13 +14,13 @@
     <!-- Add reviews as cards -->
         <div class="container text-center">
             
-            <h1 class='display-3 my-3 px-5'>{{ dealer.full_name }}</h1>
-            <h5 class='display-5 px-5'>{{ dealer.address }}, {{ dealer.zip }}</h5>
-            <h5 class='display-5 px-5'>{{ dealer.city }} - {{ dealer.st }}</h5>
+            <h1 class='display-3 my-3 px-5'><b>{{ dealer.full_name }}</b></h1>
+            <h5 class='px-5'>{{ dealer.address }}, {{ dealer.zip }}</h5>
+            <h5 class='px-5'>{{ dealer.city }} - {{ dealer.st }}</h5>
             
-            <h3 class='display-4 my-4 px-5'>Reviews for {{ dealer.short_name }}</h3>
+            <h2 class='my-4 px-5'>Reviews for {{ dealer.short_name }}</h2>
             {% if user.is_authenticated %}
-            <h5 class='display-5 mb-4 px-5'><a href="{% url 'djangoapp:add_review' dealer.id %}">Add review</a></h5>
+            <h5 class='mb-4 px-5'><a href="{% url 'djangoapp:add_review' dealer.id %}">Add review</a></h5>
             {% endif %}
 
             <div class="card-columns">
