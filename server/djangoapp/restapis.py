@@ -148,7 +148,7 @@ def get_dealer_reviews_from_cf (url, dealerId):
 
 def analyze_review_sentiments(text):
     json_result = get_request('https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/44b4df2a-c645-421a-afb9-ee76b26b56fa/v1/analyze',
-                              api_key = "txxUEo2D25-IdrP4GIunJybRIgthErKBmijwCVU8wFrV", #INSERT_API_KEY,
+                              api_key = INSERT_API_KEY,
                               version='2022-04-07', features='sentiment', text=text, return_analyzed_text=False)
     
     sentiment = "unknown"
