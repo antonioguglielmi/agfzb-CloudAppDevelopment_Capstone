@@ -52,7 +52,12 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
     json_result = get_request(url)
+    
     if json_result:
+        
+        if json_result["statusCode"] == 404:
+            return results
+
         dealers = json_result["body"]
         # For each dealer object
         for dealer in dealers:
@@ -73,6 +78,10 @@ def get_dealers_by_state(url, state):
     # Call get_request with a URL parameter
     json_result = get_request(url, state=state)
     if json_result:
+
+        if json_result["statusCode"] == 404:
+            return results
+
         dealers = json_result["body"]
         # For each dealer object
         for dealer_doc in dealers:
@@ -86,6 +95,25 @@ def get_dealers_by_state(url, state):
     return results
 
 
+def get_dealer_by_id(url, dealer_id):
+    dealer_obj = None
+    # Call get_request with a URL parameter
+    json_result = get_request(url, dealerId=dealer_id)
+    if json_result:
+
+        if json_result["statusCode"] == 404:
+            return dealer_obj
+
+        dealer_doc = json_result["body"]
+        # For each dealer object
+        dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], full_name=dealer_doc["full_name"],
+                                id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
+                                short_name=dealer_doc["short_name"],
+                                st=dealer_doc["st"], state=dealer_doc["state"], zip=dealer_doc["zip"])
+
+    return dealer_obj
+
+
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # - Call get_request() with specified arguments
@@ -95,6 +123,10 @@ def get_dealer_reviews_from_cf (url, dealerId):
     # Call get_request with a URL parameter
     json_result = get_request(url, dealerId=dealerId)
     if json_result:
+
+        if json_result["statusCode"] == 404:
+            return results
+
         reviews = json_result["body"]["data"]
         # For each dealer object
         for review in reviews:
@@ -116,7 +148,7 @@ def get_dealer_reviews_from_cf (url, dealerId):
 
 def analyze_review_sentiments(text):
     json_result = get_request('https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/44b4df2a-c645-421a-afb9-ee76b26b56fa/v1/analyze',
-                              api_key = INSERT_API_KEY,
+                              api_key = "txxUEo2D25-IdrP4GIunJybRIgthErKBmijwCVU8wFrV", #INSERT_API_KEY,
                               version='2022-04-07', features='sentiment', text=text, return_analyzed_text=False)
     
     sentiment = "unknown"

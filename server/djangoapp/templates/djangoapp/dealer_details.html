@@ -9,34 +9,39 @@
 
     <body>
 
-    {% include 'djangoapp/navbar.html' with active_menu='contact' %}
+    {% include 'djangoapp/navbar.html' with active_menu='' %}
 
     <!-- Add reviews as cards -->
         <div class="container text-center">
-                        
-            <h1 class='display-3 my-5 px-5'>Dealership review</h1>
+            
+            <h1 class='display-3 my-3 px-5'>{{ dealer.full_name }}</h1>
+            <h5 class='display-5 px-5'>{{ dealer.address }}, {{ dealer.zip }}</h5>
+            <h5 class='display-5 px-5'>{{ dealer.city }} - {{ dealer.st }}</h5>
+            
+            <h3 class='display-4 my-4 px-5'>Reviews for {{ dealer.short_name }}</h3>
             {% if user.is_authenticated %}
-            <h5 class='display-5 mt-2 px-5'><a>Add review</a></h5>
+            <h5 class='display-5 mb-4 px-5'><a href="{% url 'djangoapp:add_review' dealer.id %}">Add review</a></h5>
             {% endif %}
 
             <div class="card-columns">
             {% for review in reviews_list %}
                 <div class="card">
                     {% if review.sentiment == 'positive' %}
-                    <img class="card-img-left img-sm" src="{{MEDIA_URL}}/emoji/positive.png">
+                    <img class="card-img-left my-3" style="width: 80px; height: 80px;" src="{{MEDIA_URL}}/emoji/positive.png">
                     {% elif review.sentiment == 'negative' %}
-                    <img class="card-img-left img-sm" src="{{MEDIA_URL}}/emoji/negative.png">
+                    <img class="card-img-left my-3" style="width: 80px; height: 80px;" src="{{MEDIA_URL}}/emoji/negative.png">
                     {% else %}
-                    <img class="card-img-left img-sm" src="{{MEDIA_URL}}/emoji/neutral.png">
+                    <img class="card-img-left my-3" style="width: 80px; height: 80px;" src="{{MEDIA_URL}}/emoji/neutral.png">
                     {% endif %}
                     <h5 class="card-title">
                         {% if review.purchase == True %}
-                            {{review.car_make}}, {{review.car_model}}, {{review.car_year}}
+                            {{review.car_make}}, {{review.car_model}}<br>
+                            {{review.car_year}}
                         {% else %}
                             No purchase
                         {% endif %}
                     </h5>
-                    <p class="card-text">
+                    <p class="card-text mb-3">
                         {{ review.review}}
                     </p>
                 </div>
