@@ -27,8 +27,11 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = ["localhost", 'ag-bestcars.mybluemix.net']
+ALLOWED_HOSTS = ["localhost", 'ag-bestcars.mybluemix.net',
+                'antoniojg-8000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai']
 
+CSRF_TRUSTED_ORIGINS = ['https://antoniojg-8000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
+                        "http://ag-bestcars.mybluemix.net",'http://*.127.0.0.1']
 
 # Application definition
 
